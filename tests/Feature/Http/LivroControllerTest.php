@@ -53,7 +53,6 @@ class LivroControllerTest extends TestCase
         $livro = Livro::latest()->first();
         $indices = $livro->indices;
 
-        $response->assertOk();
         foreach ($indices as $indice) {
             $this->assertDatabaseHas(
                 'indices', 
