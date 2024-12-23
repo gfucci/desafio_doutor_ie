@@ -32,7 +32,7 @@ class IndiceTest extends TestCase
         );
     }
 
-    public function test_subIndices_relationship(): void
+    public function test_subindices_relationship(): void
     {
         $livroProvider = $this->livroProvider();
         $indiceRaiz = $livroProvider['indice'];
@@ -44,7 +44,7 @@ class IndiceTest extends TestCase
             ]);
         }
 
-        foreach ($livroProvider['indice']->subIndices as $subIndice) {
+        foreach ($livroProvider['indice']->subindices as $subIndice) {
             $this->assertInstanceOf(Indice::class, $subIndice);
             $this->assertEquals(
                 $subIndice->indice_pai_id, 
@@ -52,7 +52,7 @@ class IndiceTest extends TestCase
             );
         }
 
-        $this->assertInstanceOf(HasMany::class, $livroProvider['indice']->subIndices());
+        $this->assertInstanceOf(HasMany::class, $livroProvider['indice']->subindices());
     }
 
     public function test_indicePai_relationship(): void

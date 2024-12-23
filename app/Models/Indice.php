@@ -24,7 +24,7 @@ class Indice extends Model
         return $this->belongsTo(Livro::class, 'livro_id');
     }
 
-    public function subIndices(): HasMany
+    public function subindices(): HasMany
     {
         return $this->hasMany(Indice::class, 'indice_pai_id');
     }
