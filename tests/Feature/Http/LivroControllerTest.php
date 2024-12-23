@@ -53,11 +53,32 @@ class LivroControllerTest extends TestCase
         $livro = Livro::latest()->first();
         $indices = $livro->indices;
 
+        $response->assertOk();
         foreach ($indices as $indice) {
             $this->assertDatabaseHas(
                 'indices', 
                 ['titulo' => $indice->titulo, 'livro_id' => $livro->id, 'indice_pai_id' => $indice->indice_pai_id]
             );
         }
+    }
+
+    public function test_get_livros(): void
+    {
+        Sanctum::actingAs(User::factory()->create());
+
+        $livro = Livro::factory()->create(['titulo' => 'Livro Teste']);
+
+        $indiceRaiz = Indice::factory()->create(['livro_id' => $livro->id, 'titulo' => 'Capítulo 1']);
+
+        $params = http_build_query([
+            'titulo' => 'Livro Teste',
+            'titulo_do_indice' => "Capítulo 1"
+        ]);
+
+        $response = $this->getJson('api/v1/livros?' . $params);
+
+        $response->assertOk();
+        $response->assertJsonFragment(['titulo' => 'Livro Teste']);
+        $response->assertJsonFragment(['titulo' => 'Capítulo 1']);
     }
 }

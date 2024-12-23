@@ -13,9 +13,35 @@ class LivrosController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $titulo = $request->query('titulo');
+        $tituloDoIndice = $request->query('titulo_do_indice');
+        $query = Livro::query();
+
+        if (!empty($titulo)) {
+            $query->where('titulo', 'like', "%$titulo%");
+        }
+
+        if (!empty($tituloDoIndice)) {
+            $query->whereHas('indices', function($subWhere) use ($tituloDoIndice) {
+                $subWhere->where('titulo', 'like', "%$tituloDoIndice%");
+            });
+        }
+
+        $livros = $query->with('indices.subindices')->get();
+
+        if ($livros->isEmpty()) {
+            return response()->json([
+                'message' => 'Nenhum livro encontrado!',
+                'data' => null
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Livros retornados com sucesso!',
+            'data' => $livros
+        ]);
     }
 
     /**
@@ -51,7 +77,7 @@ class LivrosController extends Controller
             return response()->json(['message' => $th->getMessage()], 400, [], JSON_UNESCAPED_UNICODE);
         }
 
-        return response()->json(['message' => 'Livro cadastrado com sucesso'], 201);
+        return response()->json(['message' => 'Livro cadastrado com sucesso!'], 201);
     }
 
     /**
